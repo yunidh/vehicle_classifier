@@ -1,2 +1,2 @@
 # Vehicle Binary Classification Model 
-Currently only supports front facing images of vehicles 
+Experimenting various methods to create vehicle classifier using Pytorch for Intelligent Parking System.
