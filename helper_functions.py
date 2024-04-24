@@ -8,8 +8,6 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 
-from torch import nn
-
 import os
 import zipfile
 
@@ -17,9 +15,8 @@ from pathlib import Path
 
 import requests
 
-# Walk through an image classification directory and find out how many files (images)
-# are in each subdirectory.
-import os
+import random
+from PIL import Image
 
 
 def walk_through_dir(dir_path):
@@ -299,79 +296,33 @@ def download_data(source: str, destination: str, remove_source: bool = True) -> 
     return image_path
 
 
-def train_step(
-    model: torch.nn.Module,
-    dataloader: torch.utils.data.DataLoader,
-    loss_fn: torch.nn.Module,
-    optimizer: torch.optim.Optimizer,
-):
-    # Put model in train mode
-    model.train()
+def plot_transformed_images(image_paths, transform, n=3, seed=42):
+    """Plots a series of random images from image_paths.
 
-    # Setup train loss and train accuracy values
-    train_loss, train_acc = 0, 0
+    Will open n image paths from image_paths, transform them
+    with transform and plot them side by side.
 
-    # Loop through data loader data batches
-    for batch, (X, y) in enumerate(dataloader):
-        # Send data to target device
-        X, y = X.to(device), y.to(device)
+    Args:
+        image_paths (list): List of target image paths.
+        transform (PyTorch Transforms): Transforms to apply to images.
+        n (int, optional): Number of images to plot. Defaults to 3.
+        seed (int, optional): Random seed for the random generator. Defaults to 42.
+    """
+    random.seed(seed)
+    random_image_paths = random.sample(image_paths, k=n)
+    for image_path in random_image_paths:
+        with Image.open(image_path) as f:
+            fig, ax = plt.subplots(1, 2)
+            ax[0].imshow(f)
+            ax[0].set_title(f"Original \nSize: {f.size}")
+            ax[0].axis("off")
 
-        # 1. Forward pass
-        y_pred = model(X)
+            # Transform and plot image
+            # Note: permute() will change shape of image to suit matplotlib
+            # (PyTorch default is [C, H, W] but Matplotlib is [H, W, C])
+            transformed_image = transform(f).permute(1, 2, 0)
+            ax[1].imshow(transformed_image)
+            ax[1].set_title(f"Transformed \nSize: {transformed_image.shape}")
+            ax[1].axis("off")
 
-        # 2. Calculate  and accumulate loss
-        loss = loss_fn(y_pred, y)
-        train_loss += loss.item()
-
-        # 3. Optimizer zero grad
-        optimizer.zero_grad()
-
-        # 4. Loss backward
-        loss.backward()
-
-        # 5. Optimizer step
-        optimizer.step()
-
-        # Calculate and accumulate accuracy metric across all batches
-        y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
-        train_acc += (y_pred_class == y).sum().item() / len(y_pred)
-
-    # Adjust metrics to get average loss and accuracy per batch
-    train_loss = train_loss / len(dataloader)
-    train_acc = train_acc / len(dataloader)
-    return train_loss, train_acc
-
-
-def test_step(
-    model: torch.nn.Module,
-    dataloader: torch.utils.data.DataLoader,
-    loss_fn: torch.nn.Module,
-):
-    # Put model in eval mode
-    model.eval()
-
-    # Setup test loss and test accuracy values
-    test_loss, test_acc = 0, 0
-
-    # Turn on inference context manager
-    with torch.inference_mode():
-        # Loop through DataLoader batches
-        for batch, (X, y) in enumerate(dataloader):
-            # Send data to target device
-            X, y = X.to(device), y.to(device)
-
-            # 1. Forward pass
-            test_pred_logits = model(X)
-
-            # 2. Calculate and accumulate loss
-            loss = loss_fn(test_pred_logits, y)
-            test_loss += loss.item()
-
-            # Calculate and accumulate accuracy
-            test_pred_labels = test_pred_logits.argmax(dim=1)
-            test_acc += (test_pred_labels == y).sum().item() / len(test_pred_labels)
-
-    # Adjust metrics to get average loss and accuracy per batch
-    test_loss = test_loss / len(dataloader)
-    test_acc = test_acc / len(dataloader)
-    return test_loss, test_acc
+            fig.suptitle(f"Class: {image_path.parent.stem}", fontsize=16)
