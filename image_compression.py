@@ -6,7 +6,7 @@ extensions = [".jpg", ".png", ".jpeg"]
 
 # Set the source folders
 source_folders = [
-    "data/vehicle_classifier_3Output/four wheeler",
+    # "data/vehicle_classifier_3Output/four wheeler",
     "data/vehicle_classifier_3Output/two wheeler",
 ]
 
