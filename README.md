@@ -10,8 +10,7 @@ The idea for this application was to create a parking system that could:
 </ul>
 
 ### Sample plot of predictions made using MatPlotLib</i></figcaption>
-<img src="https://github.com/yunidh/vehicle_classifier/blob/main/images/result.png" width="300">
-
+<img src="https://github.com/yunidh/vehicle_classifier/blob/main/images/result.png" width="500">
 <br/>
 
 ### Final desktop application which utilized Vehicle classifier with NPR model
