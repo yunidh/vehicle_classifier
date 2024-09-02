@@ -1,4 +1,4 @@
-# Vehicle Binary Classification Model 
+# Vehicle Classification Model 
 Experimenting various methods to create vehicle classifier using Pytorch for an Intelligent Parking System named Superveyes.
 
 The final vehicle classification model was used in conjunction with a NPR(Number Plate Recognition) model to create a Python desktop application.
