@@ -3,8 +3,9 @@ Experimenting various methods to create vehicle classifier using Pytorch for Int
 
 <figure>
   <img src="https://github.com/yunidh/vehicle_classifier/blob/main/images/desktop%20example.jpg" width="500">
-  <figcaption>Sample plot of predictions made using MatPlotLib</figcaption>
+  <figcaption><i>Sample plot of predictions made using MatPlotLib</i></figcaption>
 </figure>
+<br/>
 <figure>
   <img src="https://github.com/yunidh/vehicle_classifier/blob/main/images/result.png" width="500">
   <figcaption>Final desktop application which utilized Vehicle classifier with NPR(Number Plate Recognition) model</figcaption>
